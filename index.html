@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Elysium Leadership Timeline</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --panel: #111827;
+    --panel2: #0f172a;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --grid: #334155;
+    --accent: #f59e0b;
+    --exact: #e5e7eb;
+    --legacy: #94a3b8;
+  }
+  html, body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  }
+  header {
+    padding: 24px 28px 12px;
+    background: linear-gradient(180deg, #111827 0%, #0b1020 100%);
+    border-bottom: 1px solid #1f2937;
+  }
+  h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    letter-spacing: 0.2px;
+  }
+  .subtitle {
+    color: var(--muted);
+    line-height: 1.5;
+    max-width: 1180px;
+  }
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #1f2937;
+    padding: 12px 24px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .toolbar label {
+    color: #d1d5db;
+    font-size: 14px;
+    user-select: none;
+  }
+  input[type="search"] {
+    background: #020617;
+    color: var(--text);
+    border: 1px solid #334155;
+    border-radius: 9px;
+    padding: 9px 12px;
+    width: 300px;
+    outline: none;
+  }
+  input[type="checkbox"] { transform: translateY(1px); }
+  .legend {
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+    color: #cbd5e1; font-size: 13px;
+  }
+  .swatch {
+    display:inline-block; width: 18px; height: 7px; border-radius: 10px; margin-right: 6px; vertical-align: middle;
+  }
+  .swatch.top { background: #fbbf24; height: 10px; }
+  .swatch.exact { background: #38bdf8; }
+  .swatch.legacy { background: #94a3b8; opacity: .55; border-top: 1px dashed #cbd5e1; }
+  .swatch.point { background: #e879f9; height: 10px; width: 10px; border-radius: 50%; }
+  main { padding: 16px 24px 32px; }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(160px, 1fr));
+    gap: 12px;
+    max-width: 1100px;
+    margin: 0 0 16px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid #1f2937;
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .card .metric { font-size: 24px; font-weight: 750; }
+  .card .label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .chart-wrap {
+    background: #020617;
+    border: 1px solid #1f2937;
+    border-radius: 16px;
+    overflow: auto;
+    box-shadow: 0 12px 30px rgba(0,0,0,.24);
+  }
+  svg { display:block; min-width: 2400px; }
+  .axis-label { fill: #cbd5e1; font-size: 12px; }
+  .row-label { fill: #e5e7eb; font-size: 12px; dominant-baseline: middle; }
+  .top-label { fill: #fde68a; font-weight: 700; }
+
+  .top-bar-label {
+    fill: #111827;
+    font-weight: 850;
+    pointer-events: none;
+    paint-order: stroke;
+    stroke: #fde68a;
+    stroke-width: 2px;
+    stroke-linejoin: round;
+  }
+  .gridline { stroke: var(--grid); stroke-width: 1; opacity: .55; }
+  .minor-grid { stroke: #1e293b; stroke-width: 1; opacity: .6; }
+  .row-bg { fill: #0b1220; opacity: .72; }
+  .row-bg.alt { fill: #111827; opacity: .72; }
+  .bar { cursor: pointer; transition: opacity .15s ease, stroke-width .15s ease; }
+  .bar:hover { opacity: 1 !important; stroke-width: 16 !important; }
+  .bar.top:hover { stroke-width: 22 !important; }
+  .point { cursor: pointer; transition: r .15s ease, opacity .15s ease; }
+  .point:hover { r: 6; opacity: 1 !important; }
+  .dimmed { opacity: .10 !important; }
+  .hidden { display: none !important; }
+  .note {
+    max-width: 1180px;
+    margin: 18px 0 0;
+    color: #cbd5e1;
+    line-height: 1.5;
+    background: rgba(15, 23, 42, .75);
+    border: 1px solid #1f2937;
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .note strong { color: #fef3c7; }
+  .links a {
+    color: #93c5fd;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(147,197,253,.4);
+  }
+  .tooltip {
+    position: fixed;
+    z-index: 50;
+    pointer-events: none;
+    background: rgba(2,6,23,.98);
+    color: #f8fafc;
+    border: 1px solid #475569;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.45;
+    max-width: 360px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.45);
+    display: none;
+  }
+  .tooltip .muted { color: #cbd5e1; }
+  .footer {
+    color: #94a3b8;
+    margin-top: 16px;
+    font-size: 12px;
+  }
+  @media (max-width: 800px) {
+    .cards { grid-template-columns: repeat(2, minmax(150px, 1fr)); }
+    input[type="search"] { width: 220px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Elysium leadership timeline</h1>
+  <div class="subtitle">
+    Reconstructed timeline of Elysium's top leaders and Ivory Guardians / council leadership.
+    Solid bars are exact Tibia.com GuildLog rank changes; translucent/dashed bars are legacy reconstruction from the old graph and historical snapshots.
+  </div>
+</header>
+
+<div class="toolbar">
+  <input id="search" type="search" placeholder="Search member, e.g. Soul jail, Duth, Scarlett..." />
+  <label><input id="showTop" type="checkbox" checked /> Top leader lane</label>
+  <label><input id="showExact" type="checkbox" checked /> Exact GuildLog bars</label>
+  <label><input id="showLegacy" type="checkbox" checked /> Legacy reconstructed bars</label>
+  <label><input id="showPoints" type="checkbox" checked /> VLEAD snapshot dots</label>
+  <div class="legend">
+    <span><span class="swatch top"></span>Top leader</span>
+    <span><span class="swatch exact"></span>GuildLog exact</span>
+    <span><span class="swatch legacy"></span>Legacy / approximate</span>
+    <span><span class="swatch point"></span>Monthly snapshot</span>
+  </div>
+</div>
+
+<main>
+  <div class="cards">
+    <div class="card"><div class="metric">12</div><div class="label">top leader periods</div></div>
+    <div class="card"><div class="metric">32</div><div class="label">exact GuildLog Ivory intervals</div></div>
+    <div class="card"><div class="metric">40</div><div class="label">legacy reconstructed intervals</div></div>
+    <div class="card"><div class="metric">151</div><div class="label">VLEAD monthly observations</div></div>
+  </div>
+
+  <div class="chart-wrap">
+    <svg id="timeline" aria-label="Elysium leadership timeline"></svg>
+  </div>
+
+  <div class="note">
+    <strong>Method note.</strong>
+    The uploaded spreadsheet's “Top Guild Leader” column is treated as a manual inference, not as a direct Tibia.com field.
+    It is still useful because the historical rule you provided is strong: only the top leader can promote/demote Ivory Guardians.
+    For Bartek / Soul jail, the timeline therefore records the council decision around <strong>2022-08-01</strong> and first rank-authority evidence by <strong>2022-08-05</strong>.
+  </div>
+
+
+  <div class="note">
+    <strong>Deleted-character fix.</strong>
+    The two GuildLog Ivory Guardian promotions that now display as <em>(deleted)</em> were mapped to <strong>Achilles Dozamet</strong>.
+    The June 2016 instance is supported by the July 2016 snapshot showing Achilles as Ivory Guardian; the October 2016 instance is supported by the council chat where Achilles says he is authenticated again and Bubbax says he will add him back to the Ivory rank.
+  </div>
+
+  <div class="note links">
+    Source data exported with this visual:
+    <a href="elysium_leadership_intervals_v2.csv">leadership intervals CSV</a> ·
+    <a href="elysium_ivory_events_v2.csv">Ivory events CSV</a>.
+  </div>
+
+  <div class="footer">Generated 2026-05-27 15:35 from the uploaded Elysium spreadsheet, the GuildLog tab, the old leadership graph image, and the WhatsApp leadership-history context.</div>
+</main>
+
+<div id="tooltip" class="tooltip"></div>
+
+<script>
+const DATA = {"generatedOn": "2026-05-27T15:58:47+00:00", "minDate": "2004-05-26", "maxDate": "2026-05-27", "topLeaders": [{"member": "Rasutures", "role": "Top Leader", "start": "2004-05-26", "end": "2004-12-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Takaris Silvershadow", "role": "Top Leader", "start": "2004-12-01", "end": "2005-09-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Sartassa Kaltblut", "role": "Top Leader", "start": "2005-09-01", "end": "2009-06-01", "source": "Old graph visual reconstruction", "confidence": "Medium", "end_reason": ""}, {"member": "Fixuku / Safirius", "role": "Top Leader", "start": "2009-06-01", "end": "2011-12-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Smerfje", "role": "Top Leader", "start": "2011-12-01", "end": "2013-07-01", "source": "Old graph visual reconstruction", "confidence": "Medium", "end_reason": ""}, {"member": "Scarlett Daemen", "role": "Top Leader", "start": "2013-07-01", "end": "2014-11-17", "source": "Old graph + WhatsApp council context", "confidence": "Medium", "end_reason": ""}, {"member": "Dart Daemen", "role": "Top Leader", "start": "2014-11-17", "end": "2016-02-14", "source": "WhatsApp council + GuildLog context", "confidence": "High", "end_reason": ""}, {"member": "Sophia Fox / Scarlett Daemen", "role": "Top Leader", "start": "2016-02-14", "end": "2016-06-25", "source": "WhatsApp council transitional period", "confidence": "Medium", "end_reason": ""}, {"member": "Bubbax", "role": "Top Leader", "start": "2016-06-25", "end": "2017-08-02", "source": "WhatsApp council + GuildLog authority inference", "confidence": "High", "end_reason": ""}, {"member": "Tanthalas the Fourth", "role": "Top Leader", "start": "2017-08-02", "end": "2019-03-01", "source": "WhatsApp council + GuildLog authority inference", "confidence": "High", "end_reason": ""}, {"member": "Duth Maldia", "role": "Top Leader", "start": "2019-03-01", "end": "2022-08-05", "source": "WhatsApp council + GuildLog authority inference", "confidence": "High", "end_reason": ""}, {"member": "Soul jail", "role": "Top Leader", "start": "2022-08-05", "end": "2026-05-27", "source": "GuildLog authority inference; council decision 2022-08-01", "confidence": "High", "end_reason": ""}], "legacyIvory": [{"member": "Takaris Silvershadow", "role": "Ivory / Leader", "start": "2004-05-26", "end": "2005-10-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Sartassa Kaltblut", "role": "Ivory / Leader", "start": "2004-07-01", "end": "2016-02-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Zafira Lunis", "role": "Ivory / Leader", "start": "2004-08-01", "end": "2005-05-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Pandorian", "role": "Ivory / Leader", "start": "2004-09-01", "end": "2006-01-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Scheijian Morgwyn", "role": "Ivory / Leader", "start": "2004-08-01", "end": "2004-10-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Trithalthus", "role": "Ivory / Leader", "start": "2004-08-01", "end": "2011-12-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Hank Scorpio", "role": "Ivory / Leader", "start": "2004-12-01", "end": "2008-11-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Padona", "role": "Ivory / Leader", "start": "2005-03-01", "end": "2006-01-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Queen Nephertiti", "role": "Ivory / Leader", "start": "2005-07-01", "end": "2006-11-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Rasutures", "role": "Ivory / Leader", "start": "2005-09-01", "end": "2007-06-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Himmelsdrachen Kamui", "role": "Ivory / Leader", "start": "2006-01-01", "end": "2006-11-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Safirius (Fixuku)", "role": "Ivory / Leader", "start": "2006-08-01", "end": "2007-03-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Fixuku", "role": "Ivory / Leader", "start": "2006-10-01", "end": "2011-12-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Grayswandir", "role": "Ivory / Leader", "start": "2007-06-01", "end": "2008-09-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Arcnagett", "role": "Ivory / Leader", "start": "2008-08-01", "end": "2015-06-19", "source": "Old graph + GuildLog closing event", "confidence": "Medium", "end_reason": ""}, {"member": "Arcan Sillopas", "role": "Ivory / Leader", "start": "2009-05-01", "end": "2009-07-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Lorion Mandragoran", "role": "Ivory / Leader", "start": "2009-07-01", "end": "2009-08-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Anjo Aprendiz", "role": "Ivory / Leader", "start": "2009-07-01", "end": "2009-11-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Effrel", "role": "Ivory / Leader", "start": "2009-08-01", "end": "2010-09-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Abaraz", "role": "Ivory / Leader", "start": "2009-10-01", "end": "2012-09-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Lobuw", "role": "Ivory / Leader", "start": "2010-03-01", "end": "2012-04-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Dark-Ignobae", "role": "Ivory / Leader", "start": "2010-03-01", "end": "2016-06-10", "source": "Old graph + GuildLog closing event", "confidence": "Medium", "end_reason": ""}, {"member": "Smerfje", "role": "Ivory / Leader", "start": "2011-01-01", "end": "2012-01-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Wofrado", "role": "Ivory / Leader", "start": "2011-05-01", "end": "2011-10-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Bardin", "role": "Ivory / Leader", "start": "2013-02-01", "end": "2013-06-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Salachadin", "role": "Ivory / Leader", "start": "2013-03-01", "end": "2015-12-06", "source": "Old graph + GuildLog closing event", "confidence": "Low", "end_reason": ""}, {"member": "Scarlett Daemen", "role": "Ivory / Leader", "start": "2013-04-01", "end": "2014-11-17", "source": "Old graph + WhatsApp context", "confidence": "Medium", "end_reason": ""}, {"member": "Camuu", "role": "Ivory / Leader", "start": "2013-05-01", "end": "2013-09-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Dart Daemen", "role": "Ivory / Leader", "start": "2013-07-01", "end": "2016-02-14", "source": "Old graph + WhatsApp context", "confidence": "Medium", "end_reason": ""}, {"member": "Ealiten", "role": "Ivory / Leader", "start": "2013-09-01", "end": "2013-10-01", "source": "Old graph visual reconstruction", "confidence": "Low", "end_reason": ""}, {"member": "Ethr Xena", "role": "Ivory / Leader", "start": "2014-02-01", "end": "2014-06-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Orienna", "role": "Ivory / Leader", "start": "2014-04-01", "end": "2014-06-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Takaris Silvershadow", "role": "Ivory / Leader", "start": "2014-06-01", "end": "2014-07-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Yohaner", "role": "Ivory / Leader", "start": "2014-06-01", "end": "2016-01-29", "source": "Old graph / WhatsApp + GuildLog closing event", "confidence": "Medium", "end_reason": ""}, {"member": "Flummigtomte", "role": "Ivory / Leader", "start": "2014-07-01", "end": "2014-09-01", "source": "Old graph / VLEAD snapshot", "confidence": "Low", "end_reason": ""}, {"member": "Warren Gray", "role": "Ivory / Leader", "start": "2014-08-01", "end": "2015-04-04", "source": "Old graph / WhatsApp + GuildLog closing event", "confidence": "Medium", "end_reason": ""}, {"member": "Duth Maldia", "role": "Ivory / Leader", "start": "2014-08-01", "end": "2015-07-03", "source": "Old graph / WhatsApp + GuildLog closing event", "confidence": "Medium", "end_reason": ""}, {"member": "Abowmannen", "role": "Ivory / Leader", "start": "2014-11-01", "end": "2015-01-14", "source": "Old graph / VLEAD + GuildLog closing event", "confidence": "Medium", "end_reason": ""}, {"member": "Lenry", "role": "Ivory / Leader", "start": "2014-11-01", "end": "2015-01-18", "source": "Old graph / WhatsApp + GuildLog closing event", "confidence": "Medium", "end_reason": ""}, {"member": "Abra kazam", "role": "Ivory / Leader", "start": "2014-11-01", "end": "2015-01-18", "source": "Old graph / VLEAD + GuildLog closing event", "confidence": "Medium", "end_reason": ""}], "exactIvory": [{"member": "Warren Gray", "role": "Ivory Guardian", "start": "2015-01-13", "end": "2015-04-04", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Elder by Dart Daemen"}, {"member": "Lenry", "role": "Ivory Guardian", "start": "2015-03-01", "end": "2016-02-11", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Resting Soul by Dart Daemen"}, {"member": "Smerfje", "role": "Ivory Guardian", "start": "2015-03-01", "end": "2015-06-19", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Elder by Dart Daemen"}, {"member": "Salachadin", "role": "Ivory Guardian", "start": "2015-04-19", "end": "2015-12-06", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Elder by Dart Daemen"}, {"member": "Bubbax", "role": "Ivory Guardian", "start": "2015-05-09", "end": "2026-05-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Ongoing / no closing event found"}, {"member": "Blub Seaworld", "role": "Ivory Guardian", "start": "2015-07-03", "end": "2016-10-13", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Immortal by Bubbax"}, {"member": "Scarlett Daemen", "role": "Ivory Guardian", "start": "2015-07-15", "end": "2015-12-06", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Ancient Myth by Dart Daemen"}, {"member": "Palku", "role": "Ivory Guardian", "start": "2015-10-29", "end": "2016-06-06", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Elder by Sophia Fox"}, {"member": "Salachadin", "role": "Ivory Guardian", "start": "2015-12-12", "end": "2016-01-29", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Elder by Dart Daemen"}, {"member": "Scarlett Daemen", "role": "Ivory Guardian", "start": "2016-01-19", "end": "2016-02-14", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Ancient Myth by Dart Daemen"}, {"member": "Cherry Crystal", "role": "Ivory Guardian", "start": "2016-01-31", "end": "2017-08-02", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Elder by Bubbax"}, {"member": "Ana Klon", "role": "Ivory Guardian", "start": "2016-02-14", "end": "2016-07-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Left the Guild"}, {"member": "Salachadin", "role": "Ivory Guardian", "start": "2016-02-19", "end": "2016-06-10", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Elder by Dart Daemen"}, {"member": "Dart Daemen", "role": "Ivory Guardian", "start": "2016-04-09", "end": "2016-06-26", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Ancient Myth by Bubbax"}, {"member": "Artho Flis", "role": "Ivory Guardian", "start": "2016-05-06", "end": "2016-07-05", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Left the Guild"}, {"member": "Alusman", "role": "Ivory Guardian", "start": "2016-06-11", "end": "2016-09-12", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Left the Guild"}, {"member": "Achilles Dozamet", "role": "Ivory Guardian", "start": "2016-06-14", "end": "2016-07-10", "source": "GuildLog target is deleted; identified as Achilles Dozamet by 2016-07-01 snapshot and WhatsApp authenticator discussion", "confidence": "High", "end_reason": "Probably demoted from Ivory after authenticator issue"}, {"member": "Nivaliv", "role": "Ivory Guardian", "start": "2016-06-29", "end": "2026-05-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Ongoing / no closing event found"}, {"member": "Tanthalas the Fourth", "role": "Ivory Guardian", "start": "2016-08-02", "end": "2026-05-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Ongoing / no closing event found"}, {"member": "Achilles Dozamet", "role": "Ivory Guardian", "start": "2016-10-08", "end": "2017-08-02", "source": "GuildLog target is deleted; identified as Achilles Dozamet by WhatsApp Oct 2016 re-authentication/promotion discussion and 2017 snapshots", "confidence": "High", "end_reason": "Stepped out of leadership in WhatsApp council discussion"}, {"member": "Duth Maldia", "role": "Ivory Guardian", "start": "2016-11-06", "end": "2024-10-19", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Righteous by Soul jail"}, {"member": "Zunus Turous", "role": "Ivory Guardian", "start": "2017-01-08", "end": "2017-10-25", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Left the Guild"}, {"member": "Soul jail", "role": "Ivory Guardian", "start": "2017-01-08", "end": "2026-05-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Ongoing / no closing event found"}, {"member": "Camuu", "role": "Ivory Guardian", "start": "2017-08-02", "end": "2026-05-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Ongoing / no closing event found"}, {"member": "Palku", "role": "Ivory Guardian", "start": "2017-08-02", "end": "2019-09-11", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Resting Soul by Duth Maldia"}, {"member": "Cherry Crystal", "role": "Ivory Guardian", "start": "2017-11-22", "end": "2019-09-11", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Resting Soul by Duth Maldia"}, {"member": "Smerfje", "role": "Ivory Guardian", "start": "2017-11-22", "end": "2026-05-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Ongoing / no closing event found"}, {"member": "Dart Daemen", "role": "Ivory Guardian", "start": "2018-05-23", "end": "2020-12-04", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Elder by Duth Maldia"}, {"member": "Violete Viviane", "role": "Ivory Guardian", "start": "2019-09-12", "end": "2021-09-10", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Follower by Duth Maldia"}, {"member": "Hekla", "role": "Ivory Guardian", "start": "2021-09-10", "end": "2023-11-28", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Was demoted to Member by Soul jail"}, {"member": "Linura", "role": "Ivory Guardian", "start": "2023-06-30", "end": "2026-05-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Ongoing / no closing event found"}, {"member": "Hekla", "role": "Ivory Guardian", "start": "2023-11-30", "end": "2026-05-27", "source": "Tibia.com GuildLog rank change", "confidence": "High", "end_reason": "Ongoing / no closing event found"}], "vleadPoints": [{"member": "Dart Daemen", "date": "2014-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2014-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2014-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2014-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2014-11-01", "value": "2", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2014-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-04-01", "value": "3", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-05-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-11-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2015-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2016-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2016-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dart Daemen", "date": "2016-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2010-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2010-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2010-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2011-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2011-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2012-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2014-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2014-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2014-11-01", "value": "2", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2014-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2015-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2015-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2015-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2015-04-01", "value": "2", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2015-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2015-11-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2015-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2016-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Dark-Ignobae", "date": "2016-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2014-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-04-01", "value": "3", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-05-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-11-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2015-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2016-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2016-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Blub Seaworld", "date": "2016-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2014-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2014-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2014-11-01", "value": "2", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2014-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2015-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2015-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2015-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2015-04-01", "value": "2", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2015-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Yohaner", "date": "2015-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Smerfje", "date": "2011-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Smerfje", "date": "2011-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Smerfje", "date": "2012-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Smerfje", "date": "2014-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Smerfje", "date": "2014-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Smerfje", "date": "2015-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Smerfje", "date": "2015-04-01", "value": "3", "source": "VLEAD monthly snapshot"}, {"member": "Arcnagett", "date": "2010-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Arcnagett", "date": "2011-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Arcnagett", "date": "2014-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Arcnagett", "date": "2014-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Arcnagett", "date": "2014-11-01", "value": "2", "source": "VLEAD monthly snapshot"}, {"member": "Arcnagett", "date": "2015-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Arcnagett", "date": "2015-04-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Arcnagett", "date": "2015-11-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lenry", "date": "2014-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lenry", "date": "2015-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lenry", "date": "2015-04-01", "value": "3", "source": "VLEAD monthly snapshot"}, {"member": "Lenry", "date": "2015-05-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lenry", "date": "2015-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lenry", "date": "2015-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Effrel", "date": "2010-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Effrel", "date": "2010-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Effrel", "date": "2010-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Effrel", "date": "2011-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Effrel", "date": "2011-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Effrel", "date": "2012-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lobuw", "date": "2010-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lobuw", "date": "2010-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lobuw", "date": "2010-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lobuw", "date": "2011-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lobuw", "date": "2012-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Lobuw", "date": "2014-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2014-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2015-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2015-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2015-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2015-04-01", "value": "2", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2015-11-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2015-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2016-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2016-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Palku", "date": "2016-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Queen Nephertiti", "date": "2010-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Queen Nephertiti", "date": "2010-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Queen Nephertiti", "date": "2010-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Queen Nephertiti", "date": "2011-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Queen Nephertiti", "date": "2014-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Takaris Silvershadow", "date": "2014-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Takaris Silvershadow", "date": "2014-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Takaris Silvershadow", "date": "2014-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Takaris Silvershadow", "date": "2014-11-01", "value": "2", "source": "VLEAD monthly snapshot"}, {"member": "Scarlett Daemen", "date": "2014-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Scarlett Daemen", "date": "2014-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Scarlett Daemen", "date": "2014-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Scarlett Daemen", "date": "2014-11-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Scarlett Daemen", "date": "2015-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Scarlett Daemen", "date": "2016-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Scarlett Daemen", "date": "2016-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Salachadin", "date": "2015-04-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Salachadin", "date": "2015-05-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Salachadin", "date": "2015-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Salachadin", "date": "2016-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Salachadin", "date": "2016-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2015-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2015-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2015-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2015-10-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2015-11-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2015-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2016-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2016-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Bubbax", "date": "2016-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Abaraz", "date": "2010-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Abaraz", "date": "2011-02-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Fixuku", "date": "2010-07-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Fixuku", "date": "2011-01-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Ethr Xena", "date": "2014-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Ethr Xena", "date": "2014-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Flummigtomte", "date": "2014-08-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Flummigtomte", "date": "2014-09-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Orienna", "date": "2014-06-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Abra kazam", "date": "2014-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Abowmannen", "date": "2014-12-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Anjo Aprendiz", "date": "2014-11-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Cherry Crystal", "date": "2016-03-01", "value": "1", "source": "VLEAD monthly snapshot"}, {"member": "Ana Klon", "date": "2016-03-01", "value": "1", "source": "VLEAD monthly snapshot"}], "memberOrder": ["Rasutures", "Takaris Silvershadow", "Sartassa Kaltblut", "Zafira Lunis", "Scheijian Morgwyn", "Trithalthus", "Pandorian", "Hank Scorpio", "Padona", "Queen Nephertiti", "Himmelsdrachen Kamui", "Safirius (Fixuku)", "Fixuku", "Grayswandir", "Arcnagett", "Arcan Sillopas", "Fixuku / Safirius", "Anjo Aprendiz", "Lorion Mandragoran", "Effrel", "Abaraz", "Dark-Ignobae", "Lobuw", "Smerfje", "Wofrado", "Bardin", "Salachadin", "Scarlett Daemen", "Camuu", "Dart Daemen", "Ealiten", "Ethr Xena", "Orienna", "Yohaner", "Flummigtomte", "Duth Maldia", "Warren Gray", "Abowmannen", "Abra kazam", "Lenry", "Blub Seaworld", "Palku", "Bubbax", "Cherry Crystal", "Ana Klon", "Sophia Fox / Scarlett Daemen", "Artho Flis", "Alusman", "Achilles Dozamet", "Nivaliv", "Tanthalas the Fourth", "Soul jail", "Zunus Turous", "Violete Viviane", "Hekla", "Linura"], "colors": {"Rasutures": "#e11d48", "Takaris Silvershadow": "#be123c", "Sartassa Kaltblut": "#0f766e", "Zafira Lunis": "#15803d", "Scheijian Morgwyn": "#7c3aed", "Trithalthus": "#d97706", "Pandorian": "#65a30d", "Hank Scorpio": "#475569", "Padona": "#ca8a04", "Queen Nephertiti": "#0f766e", "Himmelsdrachen Kamui": "#0d9488", "Safirius (Fixuku)": "#16a34a", "Fixuku": "#475569", "Grayswandir": "#0f766e", "Arcnagett": "#a16207", "Arcan Sillopas": "#0f766e", "Fixuku / Safirius": "#a16207", "Anjo Aprendiz": "#2563eb", "Lorion Mandragoran": "#65a30d", "Effrel": "#6d28d9", "Abaraz": "#e11d48", "Dark-Ignobae": "#e11d48", "Lobuw": "#ea580c", "Smerfje": "#ca8a04", "Wofrado": "#e11d48", "Bardin": "#be123c", "Salachadin": "#475569", "Scarlett Daemen": "#15803d", "Camuu": "#ea580c", "Dart Daemen": "#ea580c", "Ealiten": "#6d28d9", "Ethr Xena": "#4f46e5", "Orienna": "#475569", "Yohaner": "#e11d48", "Flummigtomte": "#059669", "Duth Maldia": "#6d28d9", "Warren Gray": "#2563eb", "Abowmannen": "#be123c", "Abra kazam": "#0f766e", "Lenry": "#c2410c", "Blub Seaworld": "#a16207", "Palku": "#ea580c", "Bubbax": "#d97706", "Cherry Crystal": "#4f46e5", "Ana Klon": "#0f766e", "Sophia Fox / Scarlett Daemen": "#4f46e5", "Artho Flis": "#0891b2", "Alusman": "#ca8a04", "Nivaliv": "#dc2626", "Tanthalas the Fourth": "#0d9488", "Soul jail": "#ca8a04", "Zunus Turous": "#6d28d9", "Violete Viviane": "#15803d", "Hekla": "#0284c7", "Linura": "#dc2626", "Achilles Dozamet": "#6d28d9"}};
+const svg = document.getElementById('timeline');
+const tooltip = document.getElementById('tooltip');
+const controls = {
+  search: document.getElementById('search'),
+  showTop: document.getElementById('showTop'),
+  showExact: document.getElementById('showExact'),
+  showLegacy: document.getElementById('showLegacy'),
+  showPoints: document.getElementById('showPoints'),
+};
+
+const MS_PER_DAY = 86400000;
+function parseDate(s) {
+  const [y,m,d] = String(s).split('-').map(Number);
+  return new Date(Date.UTC(y, m-1, d));
+}
+function fmtDate(s) {
+  if (!s) return '';
+  const dt = parseDate(s);
+  return dt.toISOString().slice(0,10);
+}
+const minD = parseDate(DATA.minDate);
+const maxD = parseDate(DATA.maxDate);
+const totalDays = (maxD - minD) / MS_PER_DAY;
+
+const labelW = 230;
+const rightPad = 80;
+const topPad = 84;
+const rowH = 30;
+const laneGap = 18;
+const topRows = 2;
+const plotW = 2450;
+const fullW = labelW + plotW + rightPad;
+const members = DATA.memberOrder;
+const fullH = topPad + topRows * rowH + laneGap + members.length * rowH + 60;
+
+svg.setAttribute('width', fullW);
+svg.setAttribute('height', fullH);
+svg.setAttribute('viewBox', `0 0 ${fullW} ${fullH}`);
+
+function xFor(dateStr) {
+  const dt = parseDate(dateStr);
+  const days = (dt - minD) / MS_PER_DAY;
+  return labelW + (days / totalDays) * plotW;
+}
+function yForMember(name) {
+  const idx = members.indexOf(name);
+  return topPad + topRows * rowH + laneGap + idx * rowH + rowH/2;
+}
+function add(tag, attrs = {}, parent = svg) {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k,v] of Object.entries(attrs)) {
+    if (v !== undefined && v !== null) el.setAttribute(k, v);
+  }
+  parent.appendChild(el);
+  return el;
+}
+function escapeHTML(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+function showTip(evt, html) {
+  tooltip.innerHTML = html;
+  tooltip.style.display = 'block';
+  const pad = 14;
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  const r = tooltip.getBoundingClientRect();
+  if (x + r.width > window.innerWidth - 8) x = evt.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 8) y = evt.clientY - r.height - pad;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+function hideTip() { tooltip.style.display = 'none'; }
+
+function draw() {
+  svg.innerHTML = '';
+
+  // Title inside SVG
+  add('text', {x: 16, y: 28, fill: '#f8fafc', 'font-size': 18, 'font-weight': 800}).textContent = 'Elysium · Top Leaders + Ivory Guardians';
+  add('text', {x: 16, y: 50, fill: '#94a3b8', 'font-size': 12}).textContent = `${DATA.minDate} to ${DATA.maxDate} · hover bars for sources and exact dates`;
+
+  // Year grid
+  for (let y=2005; y<=2026; y++) {
+    const x = xFor(`${y}-01-01`);
+    add('line', {x1:x, y1:64, x2:x, y2:fullH-40, class:'gridline'});
+    add('text', {x:x+3, y:77, class:'axis-label'}).textContent = y;
+  }
+  // mid-year minor grid
+  for (let y=2004; y<=2026; y++) {
+    const x = xFor(`${y}-07-01`);
+    add('line', {x1:x, y1:84, x2:x, y2:fullH-40, class:'minor-grid'});
+  }
+
+  // Top leader background rows
+  add('rect', {x:0, y:topPad-6, width:fullW, height:rowH*1.6, fill:'#1e1b4b', opacity:.55});
+  add('text', {x:12, y:topPad + rowH/2, class:'row-label top-label'}).textContent = 'Top leader';
+
+  // Member rows
+  members.forEach((m, i) => {
+    const y = topPad + topRows*rowH + laneGap + i*rowH;
+    add('rect', {x:0, y:y, width:fullW, height:rowH, class:'row-bg' + (i%2 ? ' alt' : '')});
+    add('text', {x:12, y:y+rowH/2, class:'row-label', 'data-member':m}).textContent = m;
+  });
+
+  // Top leader bars
+  DATA.topLeaders.forEach(rec => {
+    const x1 = xFor(rec.start), x2 = xFor(rec.end);
+    const y = topPad + rowH/2;
+    const el = add('line', {
+      x1:x1, y1:y, x2:Math.max(x2, x1+4), y2:y,
+      stroke:'#fbbf24', 'stroke-width':16, 'stroke-linecap':'round',
+      class:'bar top data-top',
+      'data-member':rec.member
+    });
+    const topShortLabels = {
+      'Takaris Silvershadow': 'Takaris',
+      'Sartassa Kaltblut': 'Sartassa',
+      'Fixuku / Safirius': 'Fixuku',
+      'Scarlett Daemen': 'Scarlett',
+      'Dart Daemen': 'Dart',
+      'Sophia Fox / Scarlett Daemen': 'Sophia',
+      'Tanthalas the Fourth': 'Tanthalas',
+      'Duth Maldia': 'Duth',
+      'Soul jail': 'Soul'
+    };
+    const barWidth = Math.max(x2 - x1, 4);
+    const label = topShortLabels[rec.member] || rec.member;
+    const tx = (x1 + Math.max(x2, x1 + 4)) / 2;
+    const t = add('text', {
+      x: tx, y: y + 4,
+      class: 'top-bar-label data-top',
+      'data-member': rec.member,
+      'text-anchor': 'middle',
+      'font-size': barWidth < 55 ? 9 : 11
+    });
+    t.textContent = label;
+    if (barWidth > 26 && label.length * 6.2 > barWidth) {
+      t.setAttribute('textLength', Math.max(22, barWidth - 8));
+      t.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+    }
+    el.addEventListener('mousemove', e => showTip(e, `
+      <strong>${escapeHTML(rec.member)}</strong><br/>
+      <span class="muted">Role:</span> Top leader<br/>
+      <span class="muted">Period:</span> ${fmtDate(rec.start)} → ${fmtDate(rec.end)}<br/>
+      <span class="muted">Confidence:</span> ${escapeHTML(rec.confidence)}<br/>
+      <span class="muted">Source:</span> ${escapeHTML(rec.source)}
+    `));
+    el.addEventListener('mouseleave', hideTip);
+  });
+
+  function drawInterval(rec, type) {
+    const y = yForMember(rec.member);
+    if (!isFinite(y)) return;
+    const x1 = xFor(rec.start), x2 = xFor(rec.end);
+    const color = DATA.colors[rec.member] || '#38bdf8';
+    const cls = type === 'exact' ? 'data-exact' : 'data-legacy';
+    const width = type === 'exact' ? 11 : 7;
+    const opacity = type === 'exact' ? 0.92 : 0.35;
+    const dash = type === 'exact' ? null : '6 5';
+    const el = add('line', {
+      x1:x1, y1:y, x2:Math.max(x2, x1+4), y2:y,
+      stroke:color, 'stroke-width':width, 'stroke-linecap':'round',
+      opacity:opacity, class:`bar ${cls}`, 'stroke-dasharray':dash,
+      'data-member':rec.member
+    });
+    el.addEventListener('mousemove', e => showTip(e, `
+      <strong>${escapeHTML(rec.member)}</strong><br/>
+      <span class="muted">Role:</span> ${escapeHTML(rec.role)}<br/>
+      <span class="muted">Period:</span> ${fmtDate(rec.start)} → ${fmtDate(rec.end)}<br/>
+      <span class="muted">Confidence:</span> ${escapeHTML(rec.confidence)}<br/>
+      <span class="muted">Source:</span> ${escapeHTML(rec.source)}<br/>
+      ${rec.end_reason ? `<span class="muted">End reason:</span> ${escapeHTML(rec.end_reason)}` : ''}
+    `));
+    el.addEventListener('mouseleave', hideTip);
+  }
+
+  DATA.legacyIvory.forEach(rec => drawInterval(rec, 'legacy'));
+  DATA.exactIvory.forEach(rec => drawInterval(rec, 'exact'));
+
+  // VLEAD monthly points
+  DATA.vleadPoints.forEach(p => {
+    const y = yForMember(p.member);
+    if (!isFinite(y)) return;
+    const x = xFor(p.date);
+    const color = DATA.colors[p.member] || '#e879f9';
+    const el = add('circle', {
+      cx:x, cy:y, r:3.5, fill:color, opacity:.62,
+      class:'point data-points', 'data-member':p.member
+    });
+    el.addEventListener('mousemove', e => showTip(e, `
+      <strong>${escapeHTML(p.member)}</strong><br/>
+      <span class="muted">Snapshot:</span> ${fmtDate(p.date)}<br/>
+      <span class="muted">Value:</span> ${escapeHTML(p.value)}<br/>
+      <span class="muted">Source:</span> ${escapeHTML(p.source)}
+    `));
+    el.addEventListener('mouseleave', hideTip);
+  });
+
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = controls.search.value.trim().toLowerCase();
+  const showTop = controls.showTop.checked;
+  const showExact = controls.showExact.checked;
+  const showLegacy = controls.showLegacy.checked;
+  const showPoints = controls.showPoints.checked;
+
+  svg.querySelectorAll('.data-top').forEach(el => el.classList.toggle('hidden', !showTop));
+  svg.querySelectorAll('.data-exact').forEach(el => el.classList.toggle('hidden', !showExact));
+  svg.querySelectorAll('.data-legacy').forEach(el => el.classList.toggle('hidden', !showLegacy));
+  svg.querySelectorAll('.data-points').forEach(el => el.classList.toggle('hidden', !showPoints));
+
+  svg.querySelectorAll('[data-member]').forEach(el => {
+    const m = (el.getAttribute('data-member') || '').toLowerCase();
+    if (q && !m.includes(q)) el.classList.add('dimmed');
+    else el.classList.remove('dimmed');
+  });
+}
+
+Object.values(controls).forEach(el => el.addEventListener('input', applyFilters));
+draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+﻿member,role,start,end,source,confidence,end_reason
+Rasutures,Top Leader,2004-05-26,2004-12-01,Old graph visual reconstruction,Low,
+Takaris Silvershadow,Top Leader,2004-12-01,2005-09-01,Old graph visual reconstruction,Low,
+Sartassa Kaltblut,Top Leader,2005-09-01,2009-06-01,Old graph visual reconstruction,Medium,
+Fixuku / Safirius,Top Leader,2009-06-01,2011-12-01,Old graph visual reconstruction,Low,
+Smerfje,Top Leader,2011-12-01,2013-07-01,Old graph visual reconstruction,Medium,
+Scarlett Daemen,Top Leader,2013-07-01,2014-11-17,Old graph + WhatsApp council context,Medium,
+Dart Daemen,Top Leader,2014-11-17,2016-02-14,WhatsApp council + GuildLog context,High,
+Sophia Fox / Scarlett Daemen,Top Leader,2016-02-14,2016-06-25,WhatsApp council transitional period,Medium,
+Bubbax,Top Leader,2016-06-25,2017-08-02,WhatsApp council + GuildLog authority inference,High,
+Tanthalas the Fourth,Top Leader,2017-08-02,2019-03-01,WhatsApp council + GuildLog authority inference,High,
+Duth Maldia,Top Leader,2019-03-01,2022-08-05,WhatsApp council + GuildLog authority inference,High,
+Soul jail,Top Leader,2022-08-05,2026-05-27,GuildLog authority inference; council decision 2022-08-01,High,
+Takaris Silvershadow,Ivory / Leader,2004-05-26,2005-10-01,Old graph visual reconstruction,Low,
+Sartassa Kaltblut,Ivory / Leader,2004-07-01,2016-02-01,Old graph visual reconstruction,Low,
+Zafira Lunis,Ivory / Leader,2004-08-01,2005-05-01,Old graph visual reconstruction,Low,
+Pandorian,Ivory / Leader,2004-09-01,2006-01-01,Old graph visual reconstruction,Low,
+Scheijian Morgwyn,Ivory / Leader,2004-08-01,2004-10-01,Old graph visual reconstruction,Low,
+Trithalthus,Ivory / Leader,2004-08-01,2011-12-01,Old graph visual reconstruction,Low,
+Hank Scorpio,Ivory / Leader,2004-12-01,2008-11-01,Old graph visual reconstruction,Low,
+Padona,Ivory / Leader,2005-03-01,2006-01-01,Old graph visual reconstruction,Low,
+Queen Nephertiti,Ivory / Leader,2005-07-01,2006-11-01,Old graph visual reconstruction,Low,
+Rasutures,Ivory / Leader,2005-09-01,2007-06-01,Old graph visual reconstruction,Low,
+Himmelsdrachen Kamui,Ivory / Leader,2006-01-01,2006-11-01,Old graph visual reconstruction,Low,
+Safirius (Fixuku),Ivory / Leader,2006-08-01,2007-03-01,Old graph visual reconstruction,Low,
+Fixuku,Ivory / Leader,2006-10-01,2011-12-01,Old graph visual reconstruction,Low,
+Grayswandir,Ivory / Leader,2007-06-01,2008-09-01,Old graph visual reconstruction,Low,
+Arcnagett,Ivory / Leader,2008-08-01,2015-06-19,Old graph + GuildLog closing event,Medium,
+Arcan Sillopas,Ivory / Leader,2009-05-01,2009-07-01,Old graph visual reconstruction,Low,
+Lorion Mandragoran,Ivory / Leader,2009-07-01,2009-08-01,Old graph visual reconstruction,Low,
+Anjo Aprendiz,Ivory / Leader,2009-07-01,2009-11-01,Old graph / VLEAD snapshot,Low,
+Effrel,Ivory / Leader,2009-08-01,2010-09-01,Old graph / VLEAD snapshot,Low,
+Abaraz,Ivory / Leader,2009-10-01,2012-09-01,Old graph / VLEAD snapshot,Low,
+Lobuw,Ivory / Leader,2010-03-01,2012-04-01,Old graph / VLEAD snapshot,Low,
+Dark-Ignobae,Ivory / Leader,2010-03-01,2016-06-10,Old graph + GuildLog closing event,Medium,
+Smerfje,Ivory / Leader,2011-01-01,2012-01-01,Old graph / VLEAD snapshot,Low,
+Wofrado,Ivory / Leader,2011-05-01,2011-10-01,Old graph visual reconstruction,Low,
+Bardin,Ivory / Leader,2013-02-01,2013-06-01,Old graph visual reconstruction,Low,
+Salachadin,Ivory / Leader,2013-03-01,2015-12-06,Old graph + GuildLog closing event,Low,
+Scarlett Daemen,Ivory / Leader,2013-04-01,2014-11-17,Old graph + WhatsApp context,Medium,
+Camuu,Ivory / Leader,2013-05-01,2013-09-01,Old graph visual reconstruction,Low,
+Dart Daemen,Ivory / Leader,2013-07-01,2016-02-14,Old graph + WhatsApp context,Medium,
+Ealiten,Ivory / Leader,2013-09-01,2013-10-01,Old graph visual reconstruction,Low,
+Ethr Xena,Ivory / Leader,2014-02-01,2014-06-01,Old graph / VLEAD snapshot,Low,
+Orienna,Ivory / Leader,2014-04-01,2014-06-01,Old graph / VLEAD snapshot,Low,
+Takaris Silvershadow,Ivory / Leader,2014-06-01,2014-07-01,Old graph / VLEAD snapshot,Low,
+Yohaner,Ivory / Leader,2014-06-01,2016-01-29,Old graph / WhatsApp + GuildLog closing event,Medium,
+Flummigtomte,Ivory / Leader,2014-07-01,2014-09-01,Old graph / VLEAD snapshot,Low,
+Warren Gray,Ivory / Leader,2014-08-01,2015-04-04,Old graph / WhatsApp + GuildLog closing event,Medium,
+Duth Maldia,Ivory / Leader,2014-08-01,2015-07-03,Old graph / WhatsApp + GuildLog closing event,Medium,
+Abowmannen,Ivory / Leader,2014-11-01,2015-01-14,Old graph / VLEAD + GuildLog closing event,Medium,
+Lenry,Ivory / Leader,2014-11-01,2015-01-18,Old graph / WhatsApp + GuildLog closing event,Medium,
+Abra kazam,Ivory / Leader,2014-11-01,2015-01-18,Old graph / VLEAD + GuildLog closing event,Medium,
+Warren Gray,Ivory Guardian,2015-01-13,2015-04-04,Tibia.com GuildLog rank change,High,Was demoted to Elder by Dart Daemen
+Lenry,Ivory Guardian,2015-03-01,2016-02-11,Tibia.com GuildLog rank change,High,Was demoted to Resting Soul by Dart Daemen
+Smerfje,Ivory Guardian,2015-03-01,2015-06-19,Tibia.com GuildLog rank change,High,Was demoted to Elder by Dart Daemen
+Salachadin,Ivory Guardian,2015-04-19,2015-12-06,Tibia.com GuildLog rank change,High,Was demoted to Elder by Dart Daemen
+Bubbax,Ivory Guardian,2015-05-09,2026-05-27,Tibia.com GuildLog rank change,High,Ongoing / no closing event found
+Blub Seaworld,Ivory Guardian,2015-07-03,2016-10-13,Tibia.com GuildLog rank change,High,Was demoted to Immortal by Bubbax
+Scarlett Daemen,Ivory Guardian,2015-07-15,2015-12-06,Tibia.com GuildLog rank change,High,Was demoted to Ancient Myth by Dart Daemen
+Palku,Ivory Guardian,2015-10-29,2016-06-06,Tibia.com GuildLog rank change,High,Was demoted to Elder by Sophia Fox
+Salachadin,Ivory Guardian,2015-12-12,2016-01-29,Tibia.com GuildLog rank change,High,Was demoted to Elder by Dart Daemen
+Scarlett Daemen,Ivory Guardian,2016-01-19,2016-02-14,Tibia.com GuildLog rank change,High,Was demoted to Ancient Myth by Dart Daemen
+Cherry Crystal,Ivory Guardian,2016-01-31,2017-08-02,Tibia.com GuildLog rank change,High,Was demoted to Elder by Bubbax
+Ana Klon,Ivory Guardian,2016-02-14,2016-07-27,Tibia.com GuildLog rank change,High,Left the Guild
+Salachadin,Ivory Guardian,2016-02-19,2016-06-10,Tibia.com GuildLog rank change,High,Was demoted to Elder by Dart Daemen
+Dart Daemen,Ivory Guardian,2016-04-09,2016-06-26,Tibia.com GuildLog rank change,High,Was demoted to Ancient Myth by Bubbax
+Artho Flis,Ivory Guardian,2016-05-06,2016-07-05,Tibia.com GuildLog rank change,High,Left the Guild
+Alusman,Ivory Guardian,2016-06-11,2016-09-12,Tibia.com GuildLog rank change,High,Left the Guild
+Achilles Dozamet,Ivory Guardian,2016-06-14,2016-07-10,GuildLog target is deleted; identified as Achilles Dozamet by 2016-07-01 snapshot and WhatsApp authenticator discussion,High,Probably demoted from Ivory after authenticator issue
+Nivaliv,Ivory Guardian,2016-06-29,2026-05-27,Tibia.com GuildLog rank change,High,Ongoing / no closing event found
+Tanthalas the Fourth,Ivory Guardian,2016-08-02,2026-05-27,Tibia.com GuildLog rank change,High,Ongoing / no closing event found
+Achilles Dozamet,Ivory Guardian,2016-10-08,2017-08-02,GuildLog target is deleted; identified as Achilles Dozamet by WhatsApp Oct 2016 re-authentication/promotion discussion and 2017 snapshots,High,Stepped out of leadership in WhatsApp council discussion
+Duth Maldia,Ivory Guardian,2016-11-06,2024-10-19,Tibia.com GuildLog rank change,High,Was demoted to Righteous by Soul jail
+Zunus Turous,Ivory Guardian,2017-01-08,2017-10-25,Tibia.com GuildLog rank change,High,Left the Guild
+Soul jail,Ivory Guardian,2017-01-08,2026-05-27,Tibia.com GuildLog rank change,High,Ongoing / no closing event found
+Camuu,Ivory Guardian,2017-08-02,2026-05-27,Tibia.com GuildLog rank change,High,Ongoing / no closing event found
+Palku,Ivory Guardian,2017-08-02,2019-09-11,Tibia.com GuildLog rank change,High,Was demoted to Resting Soul by Duth Maldia
+Cherry Crystal,Ivory Guardian,2017-11-22,2019-09-11,Tibia.com GuildLog rank change,High,Was demoted to Resting Soul by Duth Maldia
+Smerfje,Ivory Guardian,2017-11-22,2026-05-27,Tibia.com GuildLog rank change,High,Ongoing / no closing event found
+Dart Daemen,Ivory Guardian,2018-05-23,2020-12-04,Tibia.com GuildLog rank change,High,Was demoted to Elder by Duth Maldia
+Violete Viviane,Ivory Guardian,2019-09-12,2021-09-10,Tibia.com GuildLog rank change,High,Was demoted to Follower by Duth Maldia
+Hekla,Ivory Guardian,2021-09-10,2023-11-28,Tibia.com GuildLog rank change,High,Was demoted to Member by Soul jail
+Linura,Ivory Guardian,2023-06-30,2026-05-27,Tibia.com GuildLog rank change,High,Ongoing / no closing event found
+Hekla,Ivory Guardian,2023-11-30,2026-05-27,Tibia.com GuildLog rank change,High,Ongoing / no closing event found
